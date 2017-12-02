@@ -180,7 +180,7 @@ void ourMove(int i){
      float passengerScore = dist(passengers[k].startX, passengers[k].startY, passengers[k].destX, passengers[k].destY);
      scores[k] = passengerScore;
   }
-  //find max
+  //find max distance of traverer
   float maxScore = max(scores);
   int index = -1;
   for (int m = 0; m <numPassengers; m++ ){
@@ -191,6 +191,8 @@ void ourMove(int i){
   
   Passenger target = passengers[index];
  
+  //if we have less than 3 passenger, pick up one 
+  if (cars[i].numPassenger < 3){
      if(abs(target.startX-cars[i].xpos) > 10){
         if(target.startX >= cars[i].xpos){
           cars[i].changeDirection(0);
@@ -205,7 +207,10 @@ void ourMove(int i){
           cars[i].changeDirection(3);
         }
       }
-      if (cars[i].numPassenger >=3){
+
+  }
+  // drop off the passenagers with shortest distance
+      else{
         float maxD = 1000000;
         int b = -1;
         for (int a = 0; a< cars[i].numPassenger; a++){
