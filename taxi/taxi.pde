@@ -48,7 +48,7 @@ boolean ifStop = false;
 int curFrame = 1;
 int finalFrame = 10000;
 // choose the seed for your random numbers
-int rSeed = 8;
+int rSeed = 1;
 
 
 
@@ -174,25 +174,26 @@ void draw() {
 // ****************************
 
 void ourMove(int i){
-  float [] scores = new float[numPassengers];
-  //calculate distance from cars to passengers
+  float [] scores = new float[numPassengers]; //array store all the scores of passengers
+
+  //calculate the score by finding the distance between passenger's starting position and destination
   for (int k = 0; k< numPassengers; k++){
      float passengerScore = dist(passengers[k].startX, passengers[k].startY, passengers[k].destX, passengers[k].destY);
      scores[k] = passengerScore;
   }
-  //find max distance of traverer
+  //find max score
   float maxScore = max(scores);
   int index = -1;
+  //find the index of that score
   for (int m = 0; m <numPassengers; m++ ){
     if (maxScore == scores[m]){
        index = m; 
     }
   }
-  
+  //use the index to find the target passenger
   Passenger target = passengers[index];
  
-  //if we have less than 3 passenger, pick up one 
-  if (cars[i].numPassenger < 3){
+     //if number of passenger <=1, we focus on picking up the target passenger
      if(abs(target.startX-cars[i].xpos) > 10){
         if(target.startX >= cars[i].xpos){
           cars[i].changeDirection(0);
@@ -207,23 +208,25 @@ void ourMove(int i){
           cars[i].changeDirection(3);
         }
       }
-
-  }
-  // drop off the passenagers with shortest distance
-      else{
-        float maxD = 1000000;
+      
+      //if number of passenger >1, we focus on dropping off the target passenger
+      //which should be the shortest traveling distance of the passenger
+      if (cars[i].numPassenger >1){
+        float minD = 1000000;
         int b = -1;
+        //finding minimum
         for (int a = 0; a< cars[i].numPassenger; a++){
           float startX = passengers[cars[i].passengerList[a]].startX;
           float startY = passengers[cars[i].passengerList[a]].startY;
           float destX = passengers[cars[i].passengerList[a]].destX;
           float destY = passengers[cars[i].passengerList[a]].destY;
           float curDist = dist(startX, startY, destX,destY);
-          if (curDist < maxD){
-             maxD = curDist;
+          if (curDist < minD){
+             minD = curDist;
              b = a;
           } 
         }
+        //go dropping off the victem
          Passenger victem = passengers[cars[i].passengerList[b]];
          if(abs(victem.destX-cars[i].xpos) > 10){
           if(victem.destX >= cars[i].xpos){
